@@ -20,7 +20,6 @@
         #app-container { width: 90%; max-width: 500px; height: 95%; display: flex; flex-direction: column; justify-content: space-between; text-align: center; position: relative; }
         #settings-trigger { position: absolute; top: 0; right: 0; font-size: 1.5rem; opacity: 0.15; padding: 10px; cursor: pointer; z-index: 10; }
         #stage { flex-grow: 1; background: white; border: 4px solid #333; border-radius: 35px; box-shadow: 12px 12px 0px rgba(0,0,0,0.1); margin-top: 40px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; transition: transform 0.2s; }
-        #stage:active { transform: scale(0.97); }
         #item-img { width: 70%; height: 70%; object-fit: contain; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.1)); animation: float 4s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
         .wobble { animation: wobble-hor-bottom 0.6s both; }
@@ -29,8 +28,29 @@
         .labels h2 { font-size: 2.3rem; color: #444; font-weight: 400; opacity: 0.8; margin: 5px 0 0 0; cursor: pointer; }
         .wiggle-text { animation: wiggle 0.3s ease; }
         @keyframes wiggle { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-3deg); } 75% { transform: rotate(3deg); } }
+
+        /* Animated Next Button */
         .nav-bar { height: 90px; margin-top: 10px; }
-        button#next-btn { width: 100%; height: 100%; border: 4px solid #333; border-radius: 25px; background-color: #333; color: white; font-size: 2rem; font-weight: bold; box-shadow: 8px 8px 0 rgba(0,0,0,0.2); cursor: pointer; }
+        button#next-btn { 
+            width: 100%; height: 100%; border: 4px solid #333; border-radius: 25px; 
+            background-color: #333; color: white; font-size: 2rem; font-weight: bold; 
+            box-shadow: 0px 8px 0 rgba(0,0,0,0.2); cursor: pointer;
+            transition: all 0.1s ease;
+            animation: pulse-button 2.5s infinite; /* Gentle pulse to attract attention */
+        }
+        
+        button#next-btn:active { 
+            transform: scale(0.95) translateY(4px); 
+            box-shadow: 0px 2px 0 rgba(0,0,0,0.2);
+            background-color: #222;
+        }
+
+        @keyframes pulse-button {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); box-shadow: 0px 10px 15px rgba(0,0,0,0.15); }
+            100% { transform: scale(1); }
+        }
+
         #start-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fffbf0; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box; }
         .splash-controls { width: 90%; max-width: 400px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; }
         .btn-pill { flex: 1; background: white; border: 3px solid #333; border-radius: 20px; padding: 12px; font-size: 1.1rem; font-weight: bold; box-shadow: 4px 4px 0 #333; cursor: pointer; }
@@ -126,7 +146,7 @@
         const vegData = [
             { en: "Carrot", es: "La Zanahoria", fr: "La Carotte", id: "1F955" },
             { en: "Corn", es: "El Elote", fr: "Le Maïs", id: "1F33D" },
-            { en: "Peas", es: "Los Chícharos", fr: "Les Petits Pois", id: "1FADB" }, // Updated to 1FADB
+            { en: "Peas", es: "Los Chícharos", fr: "Les Petits Pois", id: "1FADB" },
             { en: "Broccoli", es: "El Brócoli", fr: "Le Brocoli", id: "1F966" },
             { en: "Tomato", es: "El Tomate", fr: "La Tomate", id: "1F345" },
             { en: "Potato", es: "La Papa", fr: "La Pomme de terre", id: "1F954" },
@@ -147,7 +167,7 @@
             { en: "Mango", es: "El Mango", fr: "La Mangue", id: "1F96D" },
             { en: "Peach", es: "El Durazno", fr: "La Pêche", id: "1F351" },
             { en: "Cherry", es: "La Cereza", fr: "La Cerise", id: "1F352" },
-            { en: "Pear", es: "La Pera", fr: "La Poire", id: "1F350" },
+            { en: "Pear", es: "La Poire", fr: "La Poire", id: "1F350" },
             { en: "Strawberry", es: "La Fresa", fr: "La Fraise", id: "1F353" },
             { en: "Blueberry", es: "La Mora", fr: "La Myrtille", id: "1FAD0" },
             { en: "Kiwi", es: "El Kiwi", fr: "Le Kiwi", id: "1F95D" },
@@ -171,22 +191,133 @@
         const sfxBase = "https://www.google.com/logos/fnbx/animal_sounds/";
         const colors = ['#fffbf0', '#f0fff4', '#f0f4ff', '#fff0f5', '#fdf2e9', '#e8f8f5'];
 
-        function setMode(mode) { currentMode = mode; document.getElementById('mode-zoo').className = mode === 'zoo' ? 'btn-pill active' : 'btn-pill'; document.getElementById('mode-veg').className = mode === 'veg' ? 'btn-pill active' : 'btn-pill'; }
-        function setLang(lang) { currentLang = lang; document.getElementById('lang-es').className = lang === 'es' ? 'btn-pill active' : 'btn-pill'; document.getElementById('lang-fr').className = lang === 'fr' ? 'btn-pill active' : 'btn-pill'; updateUIText(); }
-        function updateUIText() { const t = uiText[currentLang]; document.getElementById('start-btn').innerText = t.start; document.getElementById('next-btn').innerText = t.next; document.getElementById('mode-label').innerText = t.mode; document.getElementById('lang-label').innerText = t.lang; document.getElementById('mode-zoo').innerText = t.zoo; document.getElementById('mode-veg').innerText = t.veg; document.getElementById('install-btn').innerText = t.install; }
-        function startApp() { document.getElementById('start-overlay').style.display = 'none'; nextItem(); }
-        function showSettings() { window.speechSynthesis.cancel(); document.getElementById('start-overlay').style.display = 'flex'; }
-        function nextItem() { window.speechSynthesis.cancel(); const source = currentMode === 'zoo' ? zooData : vegData; if (currentDeck.length === 0) { currentDeck = [...source].sort(() => Math.random() - 0.5); } currentItem = currentDeck.pop(); document.body.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)]; const stage = document.getElementById('stage'); stage.classList.remove('wobble'); void stage.offsetWidth; stage.classList.add('wobble'); render(); }
-        function render() { const img = document.getElementById('item-img'); img.style.opacity = 0; setTimeout(() => { img.src = imgBase + currentItem.id + ".svg"; document.getElementById('name-en').innerText = currentItem.en; document.getElementById('name-sec').innerText = currentItem[currentLang]; img.onload = () => { img.style.opacity = 1; }; speakNames(); }, 100); }
-        function interactCard() { if(!currentItem) return; if (currentMode === 'zoo' && currentItem.sfx) { new Audio(sfxBase + currentItem.sfx).play(); showIcon("🎵"); } else { showIcon("🤫"); } }
-        function repeatWord(type) { const el = type === 'en' ? document.getElementById('name-en') : document.getElementById('name-sec'); el.classList.add('wiggle-text'); setTimeout(() => el.classList.remove('wiggle-text'), 300); window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(type === 'en' ? currentItem.en : currentItem[currentLang]); u.lang = type === 'en' ? 'en-GB' : (currentLang === 'es' ? 'es-MX' : 'fr-FR'); u.rate = 0.9; window.speechSynthesis.speak(u); }
-        function showIcon(char) { const icon = document.getElementById('status-icon'); icon.innerText = char; icon.style.opacity = 1; setTimeout(() => icon.style.opacity = 0, 1000); }
-        function speakNames() { showIcon("🗣️"); window.speechSynthesis.cancel(); const uEn = new SpeechSynthesisUtterance(currentItem.en); uEn.lang = 'en-GB'; uEn.rate = 0.9; const uSec = new SpeechSynthesisUtterance(currentItem[currentLang]); uSec.lang = currentLang === 'es' ? 'es-MX' : 'fr-FR'; uSec.rate = 0.9; window.speechSynthesis.speak(uEn); setTimeout(() => { window.speechSynthesis.speak(uSec); document.getElementById('status-icon').style.opacity = 0; }, 1200); }
+        function setMode(mode) { 
+            currentMode = mode; 
+            currentDeck = [];
+            document.getElementById('mode-zoo').className = mode === 'zoo' ? 'btn-pill active' : 'btn-pill'; 
+            document.getElementById('mode-veg').className = mode === 'veg' ? 'btn-pill active' : 'btn-pill'; 
+        }
 
-        let deferredPrompt; window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; document.getElementById('install-container').style.display = 'block'; });
-        document.getElementById('install-btn').addEventListener('click', async () => { if (deferredPrompt) { deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; if (outcome === 'accepted') document.getElementById('install-container').style.display = 'none'; deferredPrompt = null; } });
-        const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; if (isIos && !window.matchMedia('(display-mode: standalone)').matches) document.getElementById('ios-install-hint').style.display = 'block';
+        function setLang(lang) { 
+            currentLang = lang; 
+            document.getElementById('lang-es').className = lang === 'es' ? 'btn-pill active' : 'btn-pill'; 
+            document.getElementById('lang-fr').className = lang === 'fr' ? 'btn-pill active' : 'btn-pill'; 
+            updateUIText(); 
+        }
+
+        function updateUIText() { 
+            const t = uiText[currentLang]; 
+            document.getElementById('start-btn').innerText = t.start; 
+            document.getElementById('next-btn').innerText = t.next; 
+            document.getElementById('mode-label').innerText = t.mode; 
+            document.getElementById('lang-label').innerText = t.lang; 
+            document.getElementById('mode-zoo').innerText = t.zoo; 
+            document.getElementById('mode-veg').innerText = t.veg; 
+            document.getElementById('install-btn').innerText = t.install; 
+        }
+
+        function startApp() { 
+            document.getElementById('start-overlay').style.display = 'none'; 
+            nextItem(); 
+        }
+
+        function showSettings() { 
+            window.speechSynthesis.cancel(); 
+            document.getElementById('start-overlay').style.display = 'flex'; 
+        }
+
+        function nextItem() { 
+            window.speechSynthesis.cancel(); 
+            const source = currentMode === 'zoo' ? zooData : vegData; 
+            if (currentDeck.length === 0) { 
+                currentDeck = [...source].sort(() => Math.random() - 0.5); 
+            } 
+            currentItem = currentDeck.pop(); 
+            document.body.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)]; 
+            const stage = document.getElementById('stage'); 
+            stage.classList.remove('wobble'); 
+            void stage.offsetWidth; 
+            stage.classList.add('wobble'); 
+            render(); 
+        }
+
+        function render() { 
+            const img = document.getElementById('item-img'); 
+            img.style.opacity = 0; 
+            setTimeout(() => { 
+                img.src = imgBase + currentItem.id + ".svg"; 
+                document.getElementById('name-en').innerText = currentItem.en; 
+                document.getElementById('name-sec').innerText = currentItem[currentLang]; 
+                img.onload = () => { img.style.opacity = 1; }; 
+                speakNames(); 
+            }, 100); 
+        }
+
+        function interactCard() { 
+            if(!currentItem) return; 
+            if (currentMode === 'zoo' && currentItem.sfx) { 
+                new Audio(sfxBase + currentItem.sfx).play(); 
+                showIcon("🎵"); 
+            } else { 
+                showIcon("🤫"); 
+            } 
+        }
+
+        function repeatWord(type) { 
+            const el = type === 'en' ? document.getElementById('name-en') : document.getElementById('name-sec'); 
+            el.classList.add('wiggle-text'); 
+            setTimeout(() => el.classList.remove('wiggle-text'), 300); 
+            window.speechSynthesis.cancel(); 
+            const u = new SpeechSynthesisUtterance(type === 'en' ? currentItem.en : currentItem[currentLang]); 
+            u.lang = type === 'en' ? 'en-GB' : (currentLang === 'es' ? 'es-MX' : 'fr-FR'); 
+            u.rate = 0.9; 
+            window.speechSynthesis.speak(u); 
+        }
+
+        function showIcon(char) { 
+            const icon = document.getElementById('status-icon'); 
+            icon.innerText = char; 
+            icon.style.opacity = 1; 
+            setTimeout(() => icon.style.opacity = 0, 1000); 
+        }
+
+        function speakNames() { 
+            showIcon("🗣️"); 
+            window.speechSynthesis.cancel(); 
+            const uEn = new SpeechSynthesisUtterance(currentItem.en); 
+            uEn.lang = 'en-GB'; 
+            uEn.rate = 0.9; 
+            const uSec = new SpeechSynthesisUtterance(currentItem[currentLang]); 
+            uSec.lang = currentLang === 'es' ? 'es-MX' : 'fr-FR'; 
+            uSec.rate = 0.9; 
+            window.speechSynthesis.speak(uEn); 
+            setTimeout(() => { 
+                window.speechSynthesis.speak(uSec); 
+                document.getElementById('status-icon').style.opacity = 0; 
+            }, 1200); 
+        }
+
+        let deferredPrompt; 
+        window.addEventListener('beforeinstallprompt', (e) => { 
+            e.preventDefault(); 
+            deferredPrompt = e; 
+            document.getElementById('install-container').style.display = 'block'; 
+        });
+
+        document.getElementById('install-btn').addEventListener('click', async () => { 
+            if (deferredPrompt) { 
+                deferredPrompt.prompt(); 
+                const { outcome } = await deferredPrompt.userChoice; 
+                if (outcome === 'accepted') document.getElementById('install-container').style.display = 'none'; 
+                deferredPrompt = null; 
+            } 
+        });
+
+        const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; 
+        if (isIos && !window.matchMedia('(display-mode: standalone)').matches) document.getElementById('ios-install-hint').style.display = 'block';
+        
         if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
+        
         updateUIText();
     </script>
 </body>
