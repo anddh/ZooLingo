@@ -30,7 +30,6 @@
 
         #app-container { width: 90%; max-width: 500px; height: 92vh; display: flex; flex-direction: column; justify-content: space-between; text-align: center; position: relative; }
         
-        /* Modern Settings Trigger - Top Right */
         #settings-trigger { 
             position: absolute; top: 10px; right: 0; 
             width: 40px; height: 40px; 
@@ -64,7 +63,7 @@
         }
         @keyframes pulse-button { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
 
-        #start-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box; }
+        #start-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fffbf0; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box; }
         #splash-logo { width: 180px; height: 180px; margin-bottom: 10px; pointer-events: none; }
         .splash-controls { width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
         .toggle-row { display: flex; gap: 8px; justify-content: center; width: 100%; }
@@ -81,7 +80,7 @@
 
     <div id="start-overlay">
         <img src="icon_splash.png" id="splash-logo" alt="Logo">
-        <h1 style="margin-bottom: 10px; font-size: 2.5rem; color: #333;">Root & Roar</h1>
+        <h1 id="splash-title" style="margin-bottom: 10px; font-size: 2.5rem; color: #333;">Root & Roar</h1>
         <div class="splash-controls">
             <p id="mode-label" style="margin: 0; font-weight: bold;">Mode:</p>
             <div class="toggle-row">
@@ -119,10 +118,9 @@
     </div>
 
     <script>
-        /* ... Logic and Data remain the same as the last working version ... */
-        const uiText = {
-            es: { start: "START!", next: "NEXT ➔", mode: "Mode:", lang: "Language:", zoo: "🦁 Zoo", veg: "🥕 Garden", mix: "✨ Mix", install: "📲 Install App" },
-            fr: { start: "START!", next: "NEXT ➔", mode: "Mode:", lang: "Language:", zoo: "🦁 Zoo", veg: "🥕 Garden", mix: "✨ Mix", install: "📲 Install App" }
+        const uiTranslations = {
+            es: { start: "¡VAMOS!", next: "SIGUIENTE ➔", mode: "Modo:", lang: "Idioma:", zoo: "🦁 Zoo", veg: "🥕 Huerta", mix: "✨ Mix", install: "📲 Instalar App" },
+            fr: { start: "C'EST PARTI !", next: "SUIVANT ➔", mode: "Mode :", lang: "Langue :", zoo: "🦁 Zoo", veg: "🥕 Jardin", mix: "✨ Mix", install: "📲 Installer l'App" }
         };
 
         const imgBase = "https://fonts.gstatic.com/s/e/notoemoji/latest/";
@@ -230,50 +228,68 @@
             { en: "Beans", es: "Los Frijoles", fr: "Les Haricots", id: "1fad8" }
         ];
 
-        let currentMode = 'zoo'; let currentLang = 'es'; let currentDeck = []; let currentItem = null;
+        let currentMode = 'zoo'; 
+        let currentLang = 'es'; 
+        let currentDeck = []; 
+        let currentItem = null;
 
         function setMode(mode) { 
-            currentMode = mode; currentDeck = [];
-            document.getElementById('mode-zoo').className = mode === 'zoo' ? 'btn-pill active' : 'btn-pill'; 
-            document.getElementById('mode-veg').className = mode === 'veg' ? 'btn-pill active' : 'btn-pill'; 
-            document.getElementById('mode-mix').className = mode === 'mix' ? 'btn-pill active' : 'btn-pill'; 
+            currentMode = mode; 
+            currentDeck = [];
+            document.querySelectorAll('#mode-zoo, #mode-veg, #mode-mix').forEach(b => b.classList.remove('active'));
+            document.getElementById('mode-' + mode).classList.add('active');
         }
 
         function setLang(lang) { 
             currentLang = lang; 
-            document.getElementById('lang-es').className = lang === 'es' ? 'btn-pill active' : 'btn-pill'; 
-            document.getElementById('lang-fr').className = lang === 'fr' ? 'btn-pill active' : 'btn-pill'; 
-            updateUIText(); 
+            // Update button visual state
+            document.querySelectorAll('#lang-es, #lang-fr').forEach(b => b.classList.remove('active'));
+            document.getElementById('lang-' + lang).classList.add('active');
+            
+            // Re-sync UI labels immediately
+            const labels = uiTranslations[lang];
+            document.getElementById('start-btn').innerText = labels.start;
+            document.getElementById('next-btn').innerText = labels.next;
+            document.getElementById('mode-label').innerText = labels.mode;
+            document.getElementById('lang-label').innerText = labels.lang;
+            document.getElementById('mode-zoo').innerText = labels.zoo;
+            document.getElementById('mode-veg').innerText = labels.veg;
+            document.getElementById('mode-mix').innerText = labels.mix;
+            if(document.getElementById('install-btn')) document.getElementById('install-btn').innerText = labels.install;
+
+            // Update current card labels if they exist
+            if(currentItem) {
+                document.getElementById('name-sec').innerText = currentItem[lang];
+            }
         }
 
-        function updateUIText() { 
-            const t = uiText[currentLang]; 
-            document.getElementById('start-btn').innerText = t.start; 
-            document.getElementById('next-btn').innerText = t.next; 
-            document.getElementById('mode-label').innerText = t.mode; 
-            document.getElementById('lang-label').innerText = t.lang; 
-            document.getElementById('mode-zoo').innerText = t.zoo; 
-            document.getElementById('mode-veg').innerText = t.veg; 
-            document.getElementById('mode-mix').innerText = t.mix;
-            if(document.getElementById('install-btn')) document.getElementById('install-btn').innerText = t.install; 
+        function startApp() { 
+            document.getElementById('start-overlay').style.display = 'none'; 
+            if(!currentItem) nextItem(); 
         }
 
-        function startApp() { document.getElementById('start-overlay').style.display = 'none'; nextItem(); }
-        function showSettings() { window.speechSynthesis.cancel(); document.getElementById('start-overlay').style.display = 'flex'; }
+        function showSettings() { 
+            window.speechSynthesis.cancel(); 
+            document.getElementById('start-overlay').style.display = 'flex'; 
+        }
 
         function nextItem() { 
             window.speechSynthesis.cancel(); 
             let source = currentMode === 'mix' ? [...zooData, ...vegData] : (currentMode === 'zoo' ? zooData : vegData);
             if (currentDeck.length === 0) { currentDeck = [...source].sort(() => Math.random() - 0.5); } 
             currentItem = currentDeck.pop(); 
+            
+            // Full screen background update
             const newColor = colors[Math.floor(Math.random() * colors.length)];
             document.documentElement.style.setProperty('--bg-color', newColor);
-            const stage = document.getElementById('stage'); 
-            stage.classList.remove('wobble'); void stage.offsetWidth; stage.classList.add('wobble'); 
+            
             render(); 
         }
 
         function render() { 
+            const stage = document.getElementById('stage');
+            stage.classList.remove('wobble'); void stage.offsetWidth; stage.classList.add('wobble');
+
             const img = document.getElementById('item-img'); 
             img.style.opacity = 0; 
             setTimeout(() => { 
@@ -330,10 +346,10 @@
             };
         }
 
-        const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; 
-        if (isIos && !window.matchMedia('(display-mode: standalone)').matches) document.getElementById('ios-install-hint').style.display = 'block';
         if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
-        updateUIText();
+        
+        // Initial sync
+        setLang(currentLang);
     </script>
 </body>
 </html>
