@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="icon.png">
@@ -13,23 +13,21 @@
 
     <style>
         body, html {
-            margin: 0; padding: 0; height: 100%; width: 100%;
+            margin: 0; 
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+            height: 100vh; width: 100vw;
             font-family: 'Mochiy Pop One', sans-serif;
             background-color: #fffbf0; transition: background-color 0.8s ease;
             overflow: hidden; display: flex; flex-direction: column;
             align-items: center; justify-content: center;
+            box-sizing: border-box;
             
-            /* Bloqueo de selección y menú contextual para evitar que Quinn lo active por error */
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            -webkit-touch-callout: none; /* Desactiva el menú de "Guardar imagen" en iOS */
-            -webkit-tap-highlight-color: transparent;
+            /* Child-proofing: No selection or context menus */
+            -webkit-user-select: none; user-select: none;
+            -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent;
         }
 
         #app-container { width: 90%; max-width: 500px; height: 95%; display: flex; flex-direction: column; justify-content: space-between; text-align: center; position: relative; }
-        
         #settings-trigger { position: absolute; top: 0; right: 0; font-size: 1.5rem; opacity: 0.15; padding: 10px; cursor: pointer; z-index: 10; }
         
         #stage { 
@@ -43,26 +41,19 @@
             width: 75%; height: 75%; object-fit: contain; 
             filter: drop-shadow(4px 8px 12px rgba(0,0,0,0.15)); 
             animation: float 4s ease-in-out infinite;
-            pointer-events: none; /* Evita arrastrar la imagen */
+            pointer-events: none;
         }
 
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
-        
         .wobble { animation: wobble-hor-bottom 0.6s both; }
-        @keyframes wobble-hor-bottom { 
-            0%, 100% { transform: translateX(0%); } 
-            15% { transform: translateX(-15px) rotate(-3deg); } 
-            30% { transform: translateX(10px) rotate(3deg); } 
-        }
+        @keyframes wobble-hor-bottom { 0%, 100% { transform: translateX(0%); } 15% { transform: translateX(-15px) rotate(-3deg); } 30% { transform: translateX(10px) rotate(3deg); } }
 
         .labels h1 { font-size: 2.6rem; color: #333; margin: 0; cursor: pointer; letter-spacing: -1px; }
         .labels h2 { font-size: 1.9rem; color: #444; font-weight: 400; opacity: 0.8; margin: 5px 0 0 0; cursor: pointer; }
-        
         .wiggle-text { animation: wiggle 0.3s ease; }
         @keyframes wiggle { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-3deg); } 75% { transform: rotate(3deg); } }
 
         .nav-bar { height: 90px; margin-top: 10px; }
-        
         button#next-btn { 
             width: 100%; height: 100%; border: 4px solid #333; border-radius: 25px; 
             background-color: #333; color: white; font-family: 'Mochiy Pop One', sans-serif; 
@@ -72,14 +63,12 @@
         button#next-btn:active { transform: scale(0.95) translateY(4px); box-shadow: 0px 2px 0 rgba(0,0,0,0.2); }
         @keyframes pulse-button { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
 
-        /* Pantalla de inicio */
         #start-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fffbf0; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box; }
         .splash-controls { width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .toggle-row { display: flex; gap: 8px; justify-content: center; width: 100%; }
         .btn-pill { flex: 1; background: white; border: 3px solid #333; border-radius: 18px; padding: 10px 5px; font-family: 'Mochiy Pop One', sans-serif; font-size: 0.85rem; font-weight: bold; box-shadow: 4px 4px 0 #333; cursor: pointer; }
         .btn-pill.active { background: #333; color: white; transform: translate(2px, 2px); box-shadow: 0px 0px 0 #333; }
         #start-btn { padding: 15px 60px; font-family: 'Mochiy Pop One', sans-serif; font-size: 2rem; background: #e76f51; color: white; border: 5px solid #333; border-radius: 30px; box-shadow: 10px 10px 0 #333; font-weight: bold; cursor: pointer; }
-        
         #install-container { margin-top: 20px; display: none; }
         #install-btn { padding: 10px 20px; background: #2a9d8f; color: white; border: 3px solid #333; border-radius: 15px; font-weight: bold; box-shadow: 4px 4px 0 #333; cursor: pointer; font-family: 'Mochiy Pop One', sans-serif; }
         #ios-install-hint { display: none; margin-top: 15px; background: #fff; padding: 10px; border: 2px dashed #333; border-radius: 10px; font-size: 0.8rem; }
@@ -91,13 +80,13 @@
     <div id="start-overlay">
         <h1 style="margin-bottom: 10px; font-size: 2.8rem; color: #333;">Root & Roar</h1>
         <div class="splash-controls">
-            <p id="mode-label" style="margin: 0; font-weight: bold;">Modo:</p>
+            <p id="mode-label" style="margin: 0; font-weight: bold;">Mode:</p>
             <div class="toggle-row">
                 <button class="btn-pill active" id="mode-zoo" onclick="setMode('zoo')">🦁 Zoo</button>
-                <button class="btn-pill" id="mode-veg" onclick="setMode('veg')">🥕 Huerta</button>
+                <button class="btn-pill" id="mode-veg" onclick="setMode('veg')">🥕 Garden</button>
                 <button class="btn-pill" id="mode-mix" onclick="setMode('mix')">✨ Mix</button>
             </div>
-            <p id="lang-label" style="margin: 10px 0 0 0; font-weight: bold;">Idioma:</p>
+            <p id="lang-label" style="margin: 10px 0 0 0; font-weight: bold;">Language:</p>
             <div class="toggle-row">
                 <button class="btn-pill active" id="lang-es" onclick="setLang('es')">🇲🇽 Latino</button>
                 <button class="btn-pill" id="lang-fr" onclick="setLang('fr')">🇫🇷 FR</button>
@@ -115,13 +104,13 @@
             <h1 id="name-en" onclick="repeatWord('en')">...</h1>
             <h2 id="name-sec" onclick="repeatWord('sec')">...</h2>
         </div>
-        <div class="nav-bar"><button id="next-btn" onclick="nextItem()">SIGUIENTE ➔</button></div>
+        <div class="nav-bar"><button id="next-btn" onclick="nextItem()">NEXT ➔</button></div>
     </div>
 
     <script>
         const uiText = {
-            es: { start: "¡VAMOS!", next: "SIGUIENTE ➔", mode: "Modo:", lang: "Idioma:", zoo: "🦁 Zoo", veg: "🥕 Huerta", mix: "✨ Mix", install: "📲 Instalar App" },
-            fr: { start: "C'EST PARTI !", next: "SUIVANT ➔", mode: "Mode :", lang: "Langue :", zoo: "🦁 Zoo", veg: "🥕 Jardin", mix: "✨ Mix", install: "📲 Installer l'App" }
+            es: { start: "START!", next: "NEXT ➔", mode: "Mode:", lang: "Language:", zoo: "🦁 Zoo", veg: "🥕 Garden", mix: "✨ Mix", install: "📲 Install App" },
+            fr: { start: "START!", next: "NEXT ➔", mode: "Mode:", lang: "Language:", zoo: "🦁 Zoo", veg: "🥕 Garden", mix: "✨ Mix", install: "📲 Install App" }
         };
 
         const imgBase = "https://fonts.gstatic.com/s/e/notoemoji/latest/";
@@ -225,7 +214,6 @@
             { en: "Garlic", es: "El Ajo", fr: "L'Ail", id: "1f9c4" },
             { en: "Ginger", es: "El Jengibre", fr: "Le Gingembre", id: "1fada" },
             { en: "Leek", es: "El Puerro", fr: "Le Poireau", id: "1fad3" },
-            { en: "Chilli", es: "El Chile", fr: "Le Piment", id: "1f336" },
             { en: "Papaya", es: "La Papaya", fr: "La Papaye", id: "1fad5" },
             { en: "Beans", es: "Los Frijoles", fr: "Les Haricots", id: "1fad8" }
         ];
@@ -260,16 +248,11 @@
         }
 
         function startApp() { document.getElementById('start-overlay').style.display = 'none'; nextItem(); }
-        
         function showSettings() { window.speechSynthesis.cancel(); document.getElementById('start-overlay').style.display = 'flex'; }
 
         function nextItem() { 
             window.speechSynthesis.cancel(); 
-            let source;
-            if (currentMode === 'zoo') source = zooData;
-            else if (currentMode === 'veg') source = vegData;
-            else source = [...zooData, ...vegData];
-
+            let source = currentMode === 'mix' ? [...zooData, ...vegData] : (currentMode === 'zoo' ? zooData : vegData);
             if (currentDeck.length === 0) { currentDeck = [...source].sort(() => Math.random() - 0.5); } 
             currentItem = currentDeck.pop(); 
             document.body.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)]; 
@@ -338,9 +321,7 @@
 
         const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; 
         if (isIos && !window.matchMedia('(display-mode: standalone)').matches) document.getElementById('ios-install-hint').style.display = 'block';
-        
         if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
-        
         updateUIText();
     </script>
 </body>
