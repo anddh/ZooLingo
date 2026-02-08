@@ -17,29 +17,69 @@
             font-family: 'Mochiy Pop One', sans-serif;
             background-color: #fffbf0; transition: background-color 0.8s ease;
             overflow: hidden; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent;
+            align-items: center; justify-content: center;
+            
+            /* Bloqueo de selección y menú contextual para evitar que Quinn lo active por error */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none; /* Desactiva el menú de "Guardar imagen" en iOS */
+            -webkit-tap-highlight-color: transparent;
         }
+
         #app-container { width: 90%; max-width: 500px; height: 95%; display: flex; flex-direction: column; justify-content: space-between; text-align: center; position: relative; }
+        
         #settings-trigger { position: absolute; top: 0; right: 0; font-size: 1.5rem; opacity: 0.15; padding: 10px; cursor: pointer; z-index: 10; }
-        #stage { flex-grow: 1; background: white; border: 4px solid #333; border-radius: 35px; box-shadow: 12px 12px 0px rgba(0,0,0,0.1); margin-top: 40px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; transition: transform 0.2s; }
-        #item-img { width: 75%; height: 75%; object-fit: contain; filter: drop-shadow(4px 8px 12px rgba(0,0,0,0.15)); animation: float 4s ease-in-out infinite; }
+        
+        #stage { 
+            flex-grow: 1; background: white; border: 4px solid #333; border-radius: 35px; 
+            box-shadow: 12px 12px 0px rgba(0,0,0,0.1); margin-top: 40px; margin-bottom: 15px; 
+            display: flex; align-items: center; justify-content: center; position: relative; 
+            cursor: pointer; transition: transform 0.2s; 
+        }
+
+        #item-img { 
+            width: 75%; height: 75%; object-fit: contain; 
+            filter: drop-shadow(4px 8px 12px rgba(0,0,0,0.15)); 
+            animation: float 4s ease-in-out infinite;
+            pointer-events: none; /* Evita arrastrar la imagen */
+        }
+
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
+        
         .wobble { animation: wobble-hor-bottom 0.6s both; }
-        @keyframes wobble-hor-bottom { 0%, 100% { transform: translateX(0%); } 15% { transform: translateX(-15px) rotate(-3deg); } 30% { transform: translateX(10px) rotate(3deg); } }
+        @keyframes wobble-hor-bottom { 
+            0%, 100% { transform: translateX(0%); } 
+            15% { transform: translateX(-15px) rotate(-3deg); } 
+            30% { transform: translateX(10px) rotate(3deg); } 
+        }
+
         .labels h1 { font-size: 2.6rem; color: #333; margin: 0; cursor: pointer; letter-spacing: -1px; }
         .labels h2 { font-size: 1.9rem; color: #444; font-weight: 400; opacity: 0.8; margin: 5px 0 0 0; cursor: pointer; }
+        
         .wiggle-text { animation: wiggle 0.3s ease; }
         @keyframes wiggle { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-3deg); } 75% { transform: rotate(3deg); } }
+
         .nav-bar { height: 90px; margin-top: 10px; }
-        button#next-btn { width: 100%; height: 100%; border: 4px solid #333; border-radius: 25px; background-color: #333; color: white; font-family: 'Mochiy Pop One', sans-serif; font-size: 1.8rem; font-weight: bold; box-shadow: 0px 8px 0 rgba(0,0,0,0.2); cursor: pointer; animation: pulse-button 2.5s infinite; }
+        
+        button#next-btn { 
+            width: 100%; height: 100%; border: 4px solid #333; border-radius: 25px; 
+            background-color: #333; color: white; font-family: 'Mochiy Pop One', sans-serif; 
+            font-size: 1.8rem; font-weight: bold; box-shadow: 0px 8px 0 rgba(0,0,0,0.2); 
+            cursor: pointer; animation: pulse-button 2.5s infinite; 
+        }
         button#next-btn:active { transform: scale(0.95) translateY(4px); box-shadow: 0px 2px 0 rgba(0,0,0,0.2); }
         @keyframes pulse-button { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+
+        /* Pantalla de inicio */
         #start-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fffbf0; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box; }
         .splash-controls { width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .toggle-row { display: flex; gap: 8px; justify-content: center; width: 100%; }
         .btn-pill { flex: 1; background: white; border: 3px solid #333; border-radius: 18px; padding: 10px 5px; font-family: 'Mochiy Pop One', sans-serif; font-size: 0.85rem; font-weight: bold; box-shadow: 4px 4px 0 #333; cursor: pointer; }
         .btn-pill.active { background: #333; color: white; transform: translate(2px, 2px); box-shadow: 0px 0px 0 #333; }
         #start-btn { padding: 15px 60px; font-family: 'Mochiy Pop One', sans-serif; font-size: 2rem; background: #e76f51; color: white; border: 5px solid #333; border-radius: 30px; box-shadow: 10px 10px 0 #333; font-weight: bold; cursor: pointer; }
+        
         #install-container { margin-top: 20px; display: none; }
         #install-btn { padding: 10px 20px; background: #2a9d8f; color: white; border: 3px solid #333; border-radius: 15px; font-weight: bold; box-shadow: 4px 4px 0 #333; cursor: pointer; font-family: 'Mochiy Pop One', sans-serif; }
         #ios-install-hint { display: none; margin-top: 15px; background: #fff; padding: 10px; border: 2px dashed #333; border-radius: 10px; font-size: 0.8rem; }
@@ -164,7 +204,7 @@
             { en: "Blueberries", es: "La Mora", fr: "La Myrtille", id: "1fad0" },
             { en: "Kiwi", es: "El Kiwi", fr: "Le Kiwi", id: "1f95d" },
             { en: "Tomato", es: "El Tomate", fr: "La Tomate", id: "1f345" },
-            { en: "Olive", es: "La Olituna", fr: "L'Olive", id: "1fad2" },
+            { en: "Olive", es: "La Aceituna", fr: "L'Olive", id: "1fad2" },
             { en: "Coconut", es: "El Coco", fr: "La Noix de Coco", id: "1f965" },
             { en: "Avocado", es: "El Aguacate", fr: "L'Avocat", id: "1f951" },
             { en: "Aubergine", es: "La Berenjena", fr: "L'Aubergine", id: "1f346" },
@@ -185,6 +225,7 @@
             { en: "Garlic", es: "El Ajo", fr: "L'Ail", id: "1f9c4" },
             { en: "Ginger", es: "El Jengibre", fr: "Le Gingembre", id: "1fada" },
             { en: "Leek", es: "El Puerro", fr: "Le Poireau", id: "1fad3" },
+            { en: "Chilli", es: "El Chile", fr: "Le Piment", id: "1f336" },
             { en: "Papaya", es: "La Papaya", fr: "La Papaye", id: "1fad5" },
             { en: "Beans", es: "Los Frijoles", fr: "Les Haricots", id: "1fad8" }
         ];
@@ -219,6 +260,7 @@
         }
 
         function startApp() { document.getElementById('start-overlay').style.display = 'none'; nextItem(); }
+        
         function showSettings() { window.speechSynthesis.cancel(); document.getElementById('start-overlay').style.display = 'flex'; }
 
         function nextItem() { 
@@ -278,10 +320,27 @@
             setTimeout(() => { window.speechSynthesis.speak(uSec); document.getElementById('status-icon').style.opacity = 0; }, 1200); 
         }
 
-        let deferredPrompt; window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; document.getElementById('install-container').style.display = 'block'; });
-        document.getElementById('install-btn').addEventListener('click', async () => { if (deferredPrompt) { deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; if (outcome === 'accepted') document.getElementById('install-container').style.display = 'none'; deferredPrompt = null; } });
-        const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; if (isIos && !window.matchMedia('(display-mode: standalone)').matches) document.getElementById('ios-install-hint').style.display = 'block';
+        let deferredPrompt; 
+        window.addEventListener('beforeinstallprompt', (e) => { 
+            e.preventDefault(); 
+            deferredPrompt = e; 
+            document.getElementById('install-container').style.display = 'block'; 
+        });
+
+        document.getElementById('install-btn').addEventListener('click', async () => { 
+            if (deferredPrompt) { 
+                deferredPrompt.prompt(); 
+                const { outcome } = await deferredPrompt.userChoice; 
+                if (outcome === 'accepted') document.getElementById('install-container').style.display = 'none'; 
+                deferredPrompt = null; 
+            } 
+        });
+
+        const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; 
+        if (isIos && !window.matchMedia('(display-mode: standalone)').matches) document.getElementById('ios-install-hint').style.display = 'block';
+        
         if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
+        
         updateUIText();
     </script>
 </body>
