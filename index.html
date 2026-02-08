@@ -12,7 +12,8 @@
         body, html {
             margin: 0; padding: 0; height: 100%; width: 100%;
             font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
-            background-color: #fffbf0; transition: background-color 0.8s ease;
+            background-color: #fffbf0; 
+            transition: background-color 0.8s ease;
             overflow: hidden; display: flex; flex-direction: column;
             align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent;
         }
@@ -30,11 +31,11 @@
         @keyframes wiggle { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-3deg); } 75% { transform: rotate(3deg); } }
         .nav-bar { height: 100px; margin-top: 10px; }
         button#next-btn { width: 100%; height: 100%; border: 4px solid #333; border-radius: 25px; background-color: #333; color: white; font-size: 2.2rem; font-weight: bold; box-shadow: 8px 8px 0 rgba(0,0,0,0.2); cursor: pointer; }
-        #start-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fffbf0; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        #start-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fffbf0; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
         .splash-controls { width: 80%; max-width: 400px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; }
-        .btn-pill { flex: 1; background: white; border: 3px solid #333; border-radius: 20px; padding: 12px; font-size: 1.1rem; font-weight: bold; box-shadow: 4px 4px 0 #333; }
+        .btn-pill { flex: 1; background: white; border: 3px solid #333; border-radius: 20px; padding: 12px; font-size: 1.1rem; font-weight: bold; box-shadow: 4px 4px 0 #333; cursor: pointer; }
         .btn-pill.active { background: #333; color: white; transform: translate(2px, 2px); box-shadow: 0px 0px 0 #333; }
-        #start-btn { padding: 20px 70px; font-size: 2.2rem; background: #e76f51; color: white; border: 5px solid #333; border-radius: 30px; box-shadow: 10px 10px 0 #333; font-weight: bold; }
+        #start-btn { padding: 20px 70px; font-size: 2.2rem; background: #e76f51; color: white; border: 5px solid #333; border-radius: 30px; box-shadow: 10px 10px 0 #333; font-weight: bold; cursor: pointer; }
         .icon-overlay { position: absolute; top: 25px; right: 25px; font-size: 2.5rem; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
     </style>
 </head>
@@ -43,10 +44,12 @@
     <div id="start-overlay">
         <h1 style="margin-bottom: 20px; font-size: 3.2rem; color: #333;">Root & Roar</h1>
         <div class="splash-controls">
+            <p id="mode-label" style="margin: 0; font-weight: bold;">Modo:</p>
             <div style="display: flex; gap: 10px;">
                 <button class="btn-pill active" id="mode-zoo" onclick="setMode('zoo')">🦁 Zoo</button>
                 <button class="btn-pill" id="mode-veg" onclick="setMode('veg')">🥕 Vegetales</button>
             </div>
+            <p id="lang-label" style="margin: 10px 0 0 0; font-weight: bold;">Idioma:</p>
             <div style="display: flex; gap: 10px;">
                 <button class="btn-pill active" id="lang-es" onclick="setLang('es')">🇲🇽 Latino</button>
                 <button class="btn-pill" id="lang-fr" onclick="setLang('fr')">🇫🇷 FR</button>
@@ -71,6 +74,12 @@
     </div>
 
     <script>
+        // UI Translations
+        const uiText = {
+            es: { start: "¡VAMOS!", next: "SIGUIENTE ➔", mode: "Modo:", lang: "Idioma:", zoo: "🦁 Zoo", veg: "🥕 Huerta" },
+            fr: { start: "C'EST PARTI !", next: "SUIVANT ➔", mode: "Mode :", lang: "Langue :", zoo: "🦁 Zoo", veg: "🥕 Jardin" }
+        };
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js').catch(err => console.log(err));
@@ -111,11 +120,24 @@
             document.getElementById('mode-zoo').className = mode === 'zoo' ? 'btn-pill active' : 'btn-pill'; 
             document.getElementById('mode-veg').className = mode === 'veg' ? 'btn-pill active' : 'btn-pill'; 
         }
+
         function setLang(lang) { 
             currentLang = lang; 
             document.getElementById('lang-es').className = lang === 'es' ? 'btn-pill active' : 'btn-pill'; 
             document.getElementById('lang-fr').className = lang === 'fr' ? 'btn-pill active' : 'btn-pill'; 
+            updateUIText();
         }
+
+        function updateUIText() {
+            const t = uiText[currentLang];
+            document.getElementById('start-btn').innerText = t.start;
+            document.getElementById('next-btn').innerText = t.next;
+            document.getElementById('mode-label').innerText = t.mode;
+            document.getElementById('lang-label').innerText = t.lang;
+            document.getElementById('mode-zoo').innerText = t.zoo;
+            document.getElementById('mode-veg').innerText = t.veg;
+        }
+
         function startApp() { document.getElementById('start-overlay').style.display = 'none'; nextItem(); }
         function showSettings() { window.speechSynthesis.cancel(); document.getElementById('start-overlay').style.display = 'flex'; }
 
@@ -173,6 +195,9 @@
                 document.getElementById('status-icon').style.opacity = 0;
             }, 1200);
         }
+        
+        // Init UI
+        updateUIText();
     </script>
 </body>
 </html>
