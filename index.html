@@ -19,84 +19,58 @@
         }
         #app-container { width: 90%; max-width: 500px; height: 95%; display: flex; flex-direction: column; justify-content: space-between; text-align: center; position: relative; }
         #settings-trigger { position: absolute; top: 0; right: 0; font-size: 1.5rem; opacity: 0.15; padding: 10px; cursor: pointer; z-index: 10; }
-        
-        #stage { flex-grow: 1; background: white; border: 4px solid #333; border-radius: 35px; box-shadow: 12px 12px 0px rgba(0,0,0,0.1); margin-top: 40px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        #stage { flex-grow: 1; background: white; border: 4px solid #333; border-radius: 35px; box-shadow: 12px 12px 0px rgba(0,0,0,0.1); margin-top: 40px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; transition: transform 0.2s; }
+        #stage:active { transform: scale(0.97); }
         #item-img { width: 70%; height: 70%; object-fit: contain; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.1)); animation: float 4s ease-in-out infinite; }
-        
-        @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-15px) rotate(2deg); } }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
         .wobble { animation: wobble-hor-bottom 0.6s both; }
-        @keyframes wobble-hor-bottom { 0%, 100% { transform: translateX(0%); } 15% { transform: translateX(-15px) rotate(-3deg); } 30% { transform: translateX(10px) rotate(3deg); } 45% { transform: translateX(-10px) rotate(-2deg); } 60% { transform: translateX(5px) rotate(1deg); } }
-        
-        .labels h1, .labels h2 { display: block; cursor: pointer; margin: 0; padding: 5px; }
-        .labels h1 { font-size: 3.5rem; color: #333; }
-        .labels h2 { font-size: 2.5rem; color: #444; font-weight: 400; opacity: 0.8; }
+        @keyframes wobble-hor-bottom { 0%, 100% { transform: translateX(0%); } 15% { transform: translateX(-15px) rotate(-3deg); } 30% { transform: translateX(10px) rotate(3deg); } }
+        .labels h1 { font-size: 3.2rem; color: #333; margin: 0; cursor: pointer; }
+        .labels h2 { font-size: 2.3rem; color: #444; font-weight: 400; opacity: 0.8; margin: 5px 0 0 0; cursor: pointer; }
         .wiggle-text { animation: wiggle 0.3s ease; }
         @keyframes wiggle { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-3deg); } 75% { transform: rotate(3deg); } }
-        
-        .nav-bar { height: 100px; margin-top: 10px; }
-        button#next-btn { width: 100%; height: 100%; border: 4px solid #333; border-radius: 25px; background-color: #333; color: white; font-size: 2.2rem; font-weight: bold; box-shadow: 8px 8px 0 rgba(0,0,0,0.2); cursor: pointer; }
-        
-        /* Splash Screen */
+        .nav-bar { height: 90px; margin-top: 10px; }
+        button#next-btn { width: 100%; height: 100%; border: 4px solid #333; border-radius: 25px; background-color: #333; color: white; font-size: 2rem; font-weight: bold; box-shadow: 8px 8px 0 rgba(0,0,0,0.2); cursor: pointer; }
         #start-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fffbf0; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box; }
         .splash-controls { width: 90%; max-width: 400px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; }
         .btn-pill { flex: 1; background: white; border: 3px solid #333; border-radius: 20px; padding: 12px; font-size: 1.1rem; font-weight: bold; box-shadow: 4px 4px 0 #333; cursor: pointer; }
         .btn-pill.active { background: #333; color: white; transform: translate(2px, 2px); box-shadow: 0px 0px 0 #333; }
-        
         #start-btn { padding: 15px 60px; font-size: 2.2rem; background: #e76f51; color: white; border: 5px solid #333; border-radius: 30px; box-shadow: 10px 10px 0 #333; font-weight: bold; cursor: pointer; }
-        
-        /* Install Button Styles */
         #install-container { margin-top: 25px; display: none; }
         #install-btn { padding: 10px 20px; background: #2a9d8f; color: white; border: 3px solid #333; border-radius: 15px; font-weight: bold; box-shadow: 4px 4px 0 #333; cursor: pointer; }
-        
-        /* iOS Instruction Bubble */
         #ios-install-hint { display: none; margin-top: 20px; background: #fff; padding: 10px; border: 2px dashed #333; border-radius: 10px; font-size: 0.9rem; }
-
         .icon-overlay { position: absolute; top: 25px; right: 25px; font-size: 2.5rem; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
     </style>
 </head>
-<body id="body">
+<body>
 
     <div id="start-overlay">
         <h1 style="margin-bottom: 15px; font-size: 3rem; color: #333;">Root & Roar</h1>
-        
         <div class="splash-controls">
             <p id="mode-label" style="margin: 0; font-weight: bold;">Modo:</p>
             <div style="display: flex; gap: 10px;">
                 <button class="btn-pill active" id="mode-zoo" onclick="setMode('zoo')">🦁 Zoo</button>
                 <button class="btn-pill" id="mode-veg" onclick="setMode('veg')">🥕 Huerta</button>
             </div>
-            
             <p id="lang-label" style="margin: 5px 0 0 0; font-weight: bold;">Idioma:</p>
             <div style="display: flex; gap: 10px;">
                 <button class="btn-pill active" id="lang-es" onclick="setLang('es')">🇲🇽 Latino</button>
                 <button class="btn-pill" id="lang-fr" onclick="setLang('fr')">🇫🇷 FR</button>
             </div>
         </div>
-
         <button id="start-btn" onclick="startApp()">START</button>
-
-        <div id="install-container">
-            <button id="install-btn">📲 Install App</button>
-        </div>
-
-        <div id="ios-install-hint">
-            Tap the <b>Share</b> icon then <b>'Add to Home Screen'</b> 📲
-        </div>
+        <div id="install-container"><button id="install-btn">📲 Install App</button></div>
+        <div id="ios-install-hint">Tap <b>Share</b> then <b>'Add to Home Screen'</b> 📲</div>
     </div>
 
     <div id="app-container">
         <div id="settings-trigger" onclick="showSettings()">⚙️</div>
-        <div id="stage" onclick="interactCard()">
-            <img id="item-img" src="" alt="Item">
-            <div id="status-icon" class="icon-overlay">🗣️</div>
-        </div>
+        <div id="stage" onclick="interactCard()"><img id="item-img" src="" alt=""><div id="status-icon" class="icon-overlay">🗣️</div></div>
         <div class="labels">
             <h1 id="name-en" onclick="repeatWord('en')">...</h1>
             <h2 id="name-sec" onclick="repeatWord('sec')">...</h2>
         </div>
-        <div class="nav-bar">
-            <button id="next-btn" onclick="nextItem()">SIGUIENTE ➔</button>
-        </div>
+        <div class="nav-bar"><button id="next-btn" onclick="nextItem()">SIGUIENTE ➔</button></div>
     </div>
 
     <script>
@@ -104,45 +78,6 @@
             es: { start: "¡VAMOS!", next: "SIGUIENTE ➔", mode: "Modo:", lang: "Idioma:", zoo: "🦁 Zoo", veg: "🥕 Huerta", install: "📲 Instalar App" },
             fr: { start: "C'EST PARTI !", next: "SUIVANT ➔", mode: "Mode :", lang: "Langue :", zoo: "🦁 Zoo", veg: "🥕 Jardin", install: "📲 Installer l'App" }
         };
-
-        // PWA Installation Logic
-        let deferredPrompt;
-        const installContainer = document.getElementById('install-container');
-        const installBtn = document.getElementById('install-btn');
-        const iosHint = document.getElementById('ios-install-hint');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installContainer.style.display = 'block';
-        });
-
-        installBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') installContainer.style.display = 'none';
-                deferredPrompt = null;
-            }
-        });
-
-        // Detect iOS for specific instructions
-        const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-        if (isIos && !isStandalone) {
-            iosHint.style.display = 'block';
-        }
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').catch(err => console.log(err));
-            });
-        }
-
-        // --- Core App Logic ---
-        const imgBase = "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/svg/";
-        const sfxBase = "https://www.google.com/logos/fnbx/animal_sounds/";
-        const colors = ['#fffbf0', '#f0fff4', '#f0f4ff', '#fff0f5', '#fdf2e9', '#e8f8f5'];
 
         const zooData = [
             { en: "Dog", es: "El Perro", fr: "Le Chien", id: "1F415", sfx: "dog.mp3" },
@@ -154,103 +89,104 @@
             { en: "Duck", es: "El Pato", fr: "Le Canard", id: "1F986", sfx: "duck.mp3" },
             { en: "Elephant", es: "El Elefante", fr: "L'Éléphant", id: "1F418", sfx: "elephant.mp3" },
             { en: "Tiger", es: "El Tigre", fr: "Le Tigre", id: "1F405", sfx: "tiger.mp3" },
-            { en: "Horse", es: "El Caballo", fr: "Le Cheval", id: "1F434", sfx: "horse.mp3" }
+            { en: "Horse", es: "El Caballo", fr: "Le Cheval", id: "1F434", sfx: "horse.mp3" },
+            { en: "Monkey", es: "El Mono", fr: "Le Singe", id: "1F435", sfx: "ape.mp3" },
+            { en: "Rooster", es: "El Gallo", fr: "Le Coq", id: "1F413", sfx: "rooster.mp3" },
+            { en: "Frog", es: "La Rana", fr: "La Grenouille", id: "1F438", sfx: "frog.mp3" },
+            { en: "Owl", es: "El Búho", fr: "Le Hibou", id: "1F989", sfx: "owl.mp3" },
+            { en: "Wolf", es: "El Lobo", fr: "Le Loup", id: "1F43A", sfx: "wolf.mp3" },
+            { en: "Bee", es: "La Abeja", fr: "L'Abeille", id: "1F41D" },
+            { en: "Butterfly", es: "La Mariposa", fr: "Le Papillon", id: "1F98B" },
+            { en: "Bear", es: "El Oso", fr: "L'Ours", id: "1F43B" },
+            { en: "Panda", es: "El Panda", fr: "Le Panda", id: "1F43C" },
+            { en: "Rabbit", es: "El Conejo", fr: "Le Lapin", id: "1F430" },
+            { en: "Zebra", es: "La Cebra", fr: "Le Zèbre", id: "1F993" },
+            { en: "Giraffe", es: "La Jirafa", fr: "La Girafe", id: "1F992" },
+            { en: "Kangaroo", es: "El Canguro", fr: "Le Kangourou", id: "1F998" },
+            { en: "Whale", es: "La Ballena", fr: "La Baleine", id: "1F433" },
+            { en: "Dolphin", es: "El Delfín", fr: "Le Dauphin", id: "1F42C" },
+            { en: "Turtle", es: "La Tortuga", fr: "La Tortue", id: "1F422" },
+            { en: "Penguin", es: "El Pingüino", fr: "Le Pingouin", id: "1F427" },
+            { en: "Gorilla", es: "El Gorila", fr: "Le Gorille", id: "1F98D" },
+            { en: "Fox", es: "El Zorro", fr: "Le Renard", id: "1F98A" },
+            { en: "Mouse", es: "El Ratón", fr: "La Souris", id: "1F401" },
+            { en: "Camel", es: "El Camello", fr: "Le Chameau", id: "1F42B" },
+            { en: "Octopus", es: "El Pulpo", fr: "Le Poulpe", id: "1F419" },
+            { en: "Shark", es: "El Tiburón", fr: "Le Requin", id: "1F988" },
+            { en: "Crocodile", es: "El Cocodrilo", fr: "Le Crocodile", id: "1F40A" },
+            { en: "Eagle", es: "El Águila", fr: "L'Aigle", id: "1F985" },
+            { en: "Swan", es: "El Cisne", fr: "Le Cygne", id: "1F9A2" },
+            { en: "Flamingo", es: "El Flamenco", fr: "Le Flamant", id: "1F9A9" },
+            { en: "Bat", es: "El Murciélago", fr: "La Chauve-souris", id: "1F987" },
+            { en: "Deer", es: "El Venado", fr: "Le Cerf", id: "1F98C" },
+            { en: "Hippopotamus", es: "El Hipopótamo", fr: "L'Hippopotame", id: "1F99B" },
+            { en: "Rhinoceros", es: "El Rinoceronte", fr: "Le Rhinocéros", id: "1F98F" }
         ];
 
         const vegData = [
             { en: "Carrot", es: "La Zanahoria", fr: "La Carotte", id: "1F955" },
-            { en: "Broccoli", es: "El Brócoli", fr: "Le Brocoli", id: "1F966" },
             { en: "Corn", es: "El Elote", fr: "Le Maïs", id: "1F33D" },
+            { en: "Peas", es: "Los Chícharos", fr: "Les Petits Pois", id: "1FADB" }, // Updated to 1FADB
+            { en: "Broccoli", es: "El Brócoli", fr: "Le Brocoli", id: "1F966" },
             { en: "Tomato", es: "El Tomate", fr: "La Tomate", id: "1F345" },
             { en: "Potato", es: "La Papa", fr: "La Pomme de terre", id: "1F954" },
             { en: "Avocado", es: "El Aguacate", fr: "L'Avocat", id: "1F951" },
-            { en: "Peas", es: "Los Chícharos", fr: "Les Petits Pois", id: "1F96C" }
+            { en: "Onion", es: "La Cebolla", fr: "L'Oignon", id: "1F9C5" },
+            { en: "Garlic", es: "El Ajo", fr: "L'Ail", id: "1F9C4" },
+            { en: "Cucumber", es: "El Pepino", fr: "Le Concombre", id: "1F952" },
+            { en: "Pumpkin", es: "La Calabaza", fr: "La Citrouille", id: "1F383" },
+            { en: "Mushroom", es: "El Hongo", fr: "Le Champignon", id: "1F344" },
+            { en: "Pepper", es: "El Chile", fr: "Le Poivron", id: "1F336" },
+            { en: "Apple", es: "La Manzana", fr: "La Pomme", id: "1F34E" },
+            { en: "Banana", es: "El Plátano", fr: "La Banane", id: "1F34C" },
+            { en: "Orange", es: "La Naranja", fr: "L'Orange", id: "1F34A" },
+            { en: "Lemon", es: "El Limón", fr: "Le Citron", id: "1F34B" },
+            { en: "Grapes", es: "Las Uvas", fr: "Le Raisin", id: "1F347" },
+            { en: "Watermelon", es: "La Sandía", fr: "La Pastèque", id: "1F349" },
+            { en: "Pineapple", es: "La Piña", fr: "L'Ananas", id: "1F34D" },
+            { en: "Mango", es: "El Mango", fr: "La Mangue", id: "1F96D" },
+            { en: "Peach", es: "El Durazno", fr: "La Pêche", id: "1F351" },
+            { en: "Cherry", es: "La Cereza", fr: "La Cerise", id: "1F352" },
+            { en: "Pear", es: "La Pera", fr: "La Poire", id: "1F350" },
+            { en: "Strawberry", es: "La Fresa", fr: "La Fraise", id: "1F353" },
+            { en: "Blueberry", es: "La Mora", fr: "La Myrtille", id: "1FAD0" },
+            { en: "Kiwi", es: "El Kiwi", fr: "Le Kiwi", id: "1F95D" },
+            { en: "Coconut", es: "El Coco", fr: "La Noix de Coco", id: "1F965" },
+            { en: "Sweet Potato", es: "El Camote", fr: "La Patate Douce", id: "1F360" },
+            { en: "Lettuce", es: "La Lechuga", fr: "La Laitue", id: "1F96C" },
+            { en: "Eggplant", es: "La Berenjena", fr: "L'Aubergine", id: "1F346" },
+            { en: "Radish", es: "El Rábano", fr: "Le Radis", id: "1F96C" },
+            { en: "Zucchini", es: "La Calabacita", fr: "La Courgette", id: "1F952" },
+            { en: "Asparagus", es: "El Espárrago", fr: "L'Asperge", id: "1F96C" },
+            { en: "Spinach", es: "La Espinaca", fr: "L'Épinard", id: "1F96C" },
+            { en: "Celery", es: "El Apio", fr: "Le Céleri", id: "1F96C" },
+            { en: "Artichoke", es: "La Alcachofa", fr: "L'Artichaut", id: "1F966" },
+            { en: "Beet", es: "El Betabel", fr: "La Betterave", id: "1F96C" },
+            { en: "Pomegranate", es: "La Granada", fr: "La Grenade", id: "1F347" },
+            { en: "Melon", es: "El Melón", fr: "Le Melon", id: "1F348" }
         ];
 
         let currentMode = 'zoo'; let currentLang = 'es'; let currentDeck = []; let currentItem = null;
+        const imgBase = "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/svg/";
+        const sfxBase = "https://www.google.com/logos/fnbx/animal_sounds/";
+        const colors = ['#fffbf0', '#f0fff4', '#f0f4ff', '#fff0f5', '#fdf2e9', '#e8f8f5'];
 
-        function setMode(mode) { 
-            currentMode = mode; 
-            document.getElementById('mode-zoo').className = mode === 'zoo' ? 'btn-pill active' : 'btn-pill'; 
-            document.getElementById('mode-veg').className = mode === 'veg' ? 'btn-pill active' : 'btn-pill'; 
-        }
-
-        function setLang(lang) { 
-            currentLang = lang; 
-            document.getElementById('lang-es').className = lang === 'es' ? 'btn-pill active' : 'btn-pill'; 
-            document.getElementById('lang-fr').className = lang === 'fr' ? 'btn-pill active' : 'btn-pill'; 
-            updateUIText();
-        }
-
-        function updateUIText() {
-            const t = uiText[currentLang];
-            document.getElementById('start-btn').innerText = t.start;
-            document.getElementById('next-btn').innerText = t.next;
-            document.getElementById('mode-label').innerText = t.mode;
-            document.getElementById('lang-label').innerText = t.lang;
-            document.getElementById('mode-zoo').innerText = t.zoo;
-            document.getElementById('mode-veg').innerText = t.veg;
-            installBtn.innerText = t.install;
-        }
-
+        function setMode(mode) { currentMode = mode; document.getElementById('mode-zoo').className = mode === 'zoo' ? 'btn-pill active' : 'btn-pill'; document.getElementById('mode-veg').className = mode === 'veg' ? 'btn-pill active' : 'btn-pill'; }
+        function setLang(lang) { currentLang = lang; document.getElementById('lang-es').className = lang === 'es' ? 'btn-pill active' : 'btn-pill'; document.getElementById('lang-fr').className = lang === 'fr' ? 'btn-pill active' : 'btn-pill'; updateUIText(); }
+        function updateUIText() { const t = uiText[currentLang]; document.getElementById('start-btn').innerText = t.start; document.getElementById('next-btn').innerText = t.next; document.getElementById('mode-label').innerText = t.mode; document.getElementById('lang-label').innerText = t.lang; document.getElementById('mode-zoo').innerText = t.zoo; document.getElementById('mode-veg').innerText = t.veg; document.getElementById('install-btn').innerText = t.install; }
         function startApp() { document.getElementById('start-overlay').style.display = 'none'; nextItem(); }
         function showSettings() { window.speechSynthesis.cancel(); document.getElementById('start-overlay').style.display = 'flex'; }
-
-        function nextItem() {
-            window.speechSynthesis.cancel();
-            const source = currentMode === 'zoo' ? zooData : vegData;
-            if (currentDeck.length === 0) { currentDeck = [...source].sort(() => Math.random() - 0.5); }
-            currentItem = currentDeck.pop();
-            document.body.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            const stage = document.getElementById('stage');
-            stage.classList.remove('wobble');
-            void stage.offsetWidth; 
-            stage.classList.add('wobble');
-            render();
-        }
-
-        function render() {
-            const img = document.getElementById('item-img');
-            img.style.opacity = 0;
-            setTimeout(() => {
-                img.src = imgBase + currentItem.id + ".svg";
-                document.getElementById('name-en').innerText = currentItem.en;
-                document.getElementById('name-sec').innerText = currentItem[currentLang];
-                img.onload = () => { img.style.opacity = 1; };
-                speakNames();
-            }, 100);
-        }
-
-        function interactCard() {
-            if(!currentItem) return;
-            if (currentMode === 'zoo' && currentItem.sfx) { new Audio(sfxBase + currentItem.sfx).play(); showIcon("🎵"); } else { showIcon("🤫"); }
-        }
-
-        function repeatWord(type) {
-            const element = type === 'en' ? document.getElementById('name-en') : document.getElementById('name-sec');
-            element.classList.add('wiggle-text');
-            setTimeout(() => element.classList.remove('wiggle-text'), 300);
-            window.speechSynthesis.cancel();
-            const u = new SpeechSynthesisUtterance(type === 'en' ? currentItem.en : currentItem[currentLang]);
-            u.lang = type === 'en' ? 'en-GB' : (currentLang === 'es' ? 'es-MX' : 'fr-FR');
-            u.rate = 0.9;
-            window.speechSynthesis.speak(u);
-        }
-
+        function nextItem() { window.speechSynthesis.cancel(); const source = currentMode === 'zoo' ? zooData : vegData; if (currentDeck.length === 0) { currentDeck = [...source].sort(() => Math.random() - 0.5); } currentItem = currentDeck.pop(); document.body.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)]; const stage = document.getElementById('stage'); stage.classList.remove('wobble'); void stage.offsetWidth; stage.classList.add('wobble'); render(); }
+        function render() { const img = document.getElementById('item-img'); img.style.opacity = 0; setTimeout(() => { img.src = imgBase + currentItem.id + ".svg"; document.getElementById('name-en').innerText = currentItem.en; document.getElementById('name-sec').innerText = currentItem[currentLang]; img.onload = () => { img.style.opacity = 1; }; speakNames(); }, 100); }
+        function interactCard() { if(!currentItem) return; if (currentMode === 'zoo' && currentItem.sfx) { new Audio(sfxBase + currentItem.sfx).play(); showIcon("🎵"); } else { showIcon("🤫"); } }
+        function repeatWord(type) { const el = type === 'en' ? document.getElementById('name-en') : document.getElementById('name-sec'); el.classList.add('wiggle-text'); setTimeout(() => el.classList.remove('wiggle-text'), 300); window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(type === 'en' ? currentItem.en : currentItem[currentLang]); u.lang = type === 'en' ? 'en-GB' : (currentLang === 'es' ? 'es-MX' : 'fr-FR'); u.rate = 0.9; window.speechSynthesis.speak(u); }
         function showIcon(char) { const icon = document.getElementById('status-icon'); icon.innerText = char; icon.style.opacity = 1; setTimeout(() => icon.style.opacity = 0, 1000); }
+        function speakNames() { showIcon("🗣️"); window.speechSynthesis.cancel(); const uEn = new SpeechSynthesisUtterance(currentItem.en); uEn.lang = 'en-GB'; uEn.rate = 0.9; const uSec = new SpeechSynthesisUtterance(currentItem[currentLang]); uSec.lang = currentLang === 'es' ? 'es-MX' : 'fr-FR'; uSec.rate = 0.9; window.speechSynthesis.speak(uEn); setTimeout(() => { window.speechSynthesis.speak(uSec); document.getElementById('status-icon').style.opacity = 0; }, 1200); }
 
-        function speakNames() {
-            showIcon("🗣️");
-            window.speechSynthesis.cancel();
-            const uEn = new SpeechSynthesisUtterance(currentItem.en); uEn.lang = 'en-GB'; uEn.rate = 0.9;
-            const uSec = new SpeechSynthesisUtterance(currentItem[currentLang]); uSec.lang = currentLang === 'es' ? 'es-MX' : 'fr-FR'; uSec.rate = 0.9;
-            window.speechSynthesis.speak(uEn);
-            setTimeout(() => {
-                window.speechSynthesis.speak(uSec);
-                document.getElementById('status-icon').style.opacity = 0;
-            }, 1200);
-        }
-        
+        let deferredPrompt; window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; document.getElementById('install-container').style.display = 'block'; });
+        document.getElementById('install-btn').addEventListener('click', async () => { if (deferredPrompt) { deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; if (outcome === 'accepted') document.getElementById('install-container').style.display = 'none'; deferredPrompt = null; } });
+        const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; if (isIos && !window.matchMedia('(display-mode: standalone)').matches) document.getElementById('ios-install-hint').style.display = 'block';
+        if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
         updateUIText();
     </script>
 </body>
