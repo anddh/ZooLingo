@@ -187,14 +187,23 @@
         let currentDeck = []; 
         let currentItem = null;
 
+        // Haptic Feedback Function
+        function vibrate(pattern = 40) {
+            if (navigator.vibrate) {
+                navigator.vibrate(pattern);
+            }
+        }
+
         function setMode(mode) { 
+            vibrate(20);
             currentMode = mode; 
-            currentDeck = []; // Clear deck to force refresh on next card
+            currentDeck = [];
             document.querySelectorAll('#mode-zoo, #mode-veg, #mode-mix').forEach(b => b.classList.remove('active'));
             document.getElementById('mode-' + mode).classList.add('active');
         }
 
         function setLang(lang) { 
+            vibrate(20);
             currentLang = lang; 
             document.querySelectorAll('#lang-es, #lang-fr').forEach(b => b.classList.remove('active'));
             document.getElementById('lang-' + lang).classList.add('active');
@@ -214,22 +223,21 @@
         }
 
         function startApp() { 
+            vibrate([30, 50, 30]);
             document.getElementById('start-overlay').style.display = 'none'; 
             nextItem(); 
         }
 
         function showSettings() { 
+            vibrate(40);
             window.speechSynthesis.cancel(); 
             document.getElementById('start-overlay').style.display = 'flex'; 
         }
 
         function nextItem() { 
+            vibrate(15);
             window.speechSynthesis.cancel(); 
-            let source;
-            if (currentMode === 'zoo') source = zooData;
-            else if (currentMode === 'veg') source = vegData;
-            else source = [...zooData, ...vegData];
-
+            let source = currentMode === 'mix' ? [...zooData, ...vegData] : (currentMode === 'zoo' ? zooData : vegData);
             if (currentDeck.length === 0) { 
                 currentDeck = [...source].sort(() => Math.random() - 0.5); 
             } 
@@ -257,14 +265,17 @@
         function interactCard() { 
             if(!currentItem) return; 
             if (currentItem.sfx) { 
+                vibrate([40, 60, 40]); // Double thump for animals
                 new Audio(sfxBase + currentItem.sfx).play(); 
                 showIcon("🎵"); 
             } else { 
+                vibrate(30); // Soft thump for quiet items
                 showIcon("🤫"); 
             } 
         }
         
         function repeatWord(type) { 
+            vibrate(25);
             const el = type === 'en' ? document.getElementById('name-en') : document.getElementById('name-sec'); 
             el.classList.add('wiggle-text'); setTimeout(() => el.classList.remove('wiggle-text'), 300); 
             window.speechSynthesis.cancel(); 
@@ -284,7 +295,7 @@
         }
 
         if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
-        updateUI(); // Initial translation sync
+        updateUI(); 
     </script>
 </body>
 </html>
